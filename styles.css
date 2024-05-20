@@ -1,0 +1,221 @@
+/* Style for the body element */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin-bottom: 30px; /* Margin at the bottom of the body */
+  font-family: 'Arial', sans-serif; /* Custom font family */
+  background-image: url(https://images.pexels.com/photos/3784221/pexels-photo-3784221.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
+  background-repeat: no-repeat;
+  background-size: cover; /* Cover the entire background */
+}
+
+/* Style for the content container */
+#content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 800px;
+  width: 100%;
+  padding: 20px;
+}
+
+ul {
+  list-style-type: none; /* Remove list bullet points */
+}
+
+/* Style for artist containers */
+.artist-container {
+  margin: 10px;
+  padding: 20px;
+  text-align: center;
+  background-color: #f9f9f9; /* Background color for artist containers */
+  border-radius: 10px; /* Rounded borders for artist containers */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Box shadow for a subtle effect */
+  transition: transform 0.2s; /* Transition for hover effect */
+}
+
+.artist-container:hover {
+  transform: scale(1.05); /* Scale up on hover */
+}
+
+/* Style for artist images */
+.artist-container img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%; /* Rounded borders for artist photos */
+  object-fit: cover;
+  margin-bottom: 10px;
+  transition: transform 0.2s; /* Transition for hover effect */
+}
+
+.artist-container:hover img {
+  transform: rotate(360deg); /* Rotate on hover */
+  cursor: pointer;
+}
+
+.artist-container h2 {
+  margin: 0;
+  color: black; /* Artist name color (black) */
+}
+
+/* Style for song titles (white) */
+.song-title {
+  color: white;
+}
+
+.heart-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: red; /* Heart icon color */
+  margin-top: 5px;
+  margin-right: 10px;
+}
+
+/* Animation for the heart icon */
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.heart-icon:hover {
+  animation: heartBeat 0.5s ease-in-out infinite; /* Apply animation on hover */
+}
+
+/* Style for the search input */
+#searchInput {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-weight: bold;
+  color: black;
+  margin-top: 20px;
+  
+}
+
+#searchInput:focus {
+  outline: none; /* Remove the default focus outline */
+  border-color: #FF5733; /* Change the border color on focus */
+  box-shadow: 0 0 5px rgba(255, 87, 51, 0.5); /* Add a box shadow on focus */
+}
+
+#searchInput::placeholder {
+  color: #999; /* Change the color of the placeholder text */
+  font-style: italic; /* Apply italic style to the placeholder text */
+}
+
+/* Style for the search button */
+#searchButton {
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #060806;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+#searchButton:hover {
+  background-color: #00ff00;
+}
+
+/* Neon Header */
+.neon-header {
+  font-size: 4em;
+  color: #00ff00;
+  text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+  animation: neonGlow 1s ease-in-out infinite alternate;
+  width: 100vw;
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.subheading {
+  color: white;
+  font-size: larger;
+  text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+}
+
+/* Keyframes for neon glow animation */
+@keyframes neonGlow {
+  from {
+    text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 15px #00ff00;
+  }
+  to {
+    text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 30px #00ff00;
+  }
+}
+
+/* Keyframes for pulsate and color change animations */
+@keyframes pulsate {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes colorChange {
+  0% {
+    background-color: #FF5733;
+  }
+  50% {
+    background-color: #FF9966;
+  }
+  100% {
+    background-color: #FF5733;
+  }
+}
+
+/* Button styles with animations */
+button {
+  transition: transform 0.2s;
+  animation: pulsate 1s infinite, colorChange 3s infinite;
+  
+}
+
+button:hover {
+  transform: scale(1.1); /* Scale up on hover */
+}
+
+button:active {
+  transform: translateY(2px); /* Move down slightly when clicked */
+  animation: shake 0.5s;
+}
+
+/* Keyframes for the shake animation */
+@keyframes shake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
