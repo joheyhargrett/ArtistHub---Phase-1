@@ -1,17 +1,11 @@
-// This code defines an array called artistData containing information about 
-// music artists. Each artist is represented as 
-// an object with two properties: "id" and "name". 
-// The "id" is a unique identifier, and the "name" is the artist's name
 const artistData = [
   { id: "6l3HvQ5sa6mXTsMTB19rO5", name: "J-Cole" },
   { id: "1uNFoZAHBGtllmzznpCI3s", name: "Justin Bieber" },
   { id: "790FomKkXshlbRYZFtlgla", name: "Karol G" },
   { id: "12Chz98pHFMPJEknJQMWvI", name: "Muse" },
   { id: "181bsRPaVXVlUKXrxwZfHK", name: "Megan Thee Stallion" }
-
 ];
-//this is a post requestToken that allows us to access the spotify api 
-//to get the artist's top tracks and albums and all the credentials needed to access the api.
+
 const requestToken = async () => {
   const response = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
@@ -21,10 +15,7 @@ const requestToken = async () => {
   data = await response.json();
   console.log(data);
 };
-// The renderPage function is responsible for rendering the artist information on a web page. It first calls the requestToken 
-// function to get the access token. Then, it iterates over each artist in artistData and calls the fetchArtist 
-//function for each artist. Finally,
-//  it sets up an event listener for a search button that calls the searchArtist function when clicked.
+
 const renderPage = async () => {
   await requestToken();
 
@@ -51,16 +42,13 @@ const toggleHeart = (artistId) => {
   const isLiked = isArtistHearted(artistId);
 
   if (isLiked) {
-
     updateHeartedArtists(artistId, false);
     heartIcon.innerHTML = "🤍";
   } else {
-
     updateHeartedArtists(artistId, true);
     heartIcon.innerHTML = "❤️";
   }
 };
-
 
 const fetchArtistGenre = async (artistId, artistContainer) => {
   const response = await fetch(`https://api.spotify.com/v1/artists/${artistId}`, {
@@ -72,22 +60,23 @@ const fetchArtistGenre = async (artistId, artistContainer) => {
 
   const genresContainer = artistContainer.querySelector(".genres");
 
-
   if (genre) {
     const formattedGenre = genre.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
     const genreElement = document.createElement("span");
     genreElement.textContent = formattedGenre;
 
-
     genresContainer.appendChild(genreElement);
   } else {
-
     genresContainer.textContent = "No genre available";
   }
 };
 
-
 const fetchArtist = async (artist) => {
+  // Check if the artist is already displayed
+  if (content.querySelector(`[data-artist="${artist.id}"]`)) {
+    return; // Exit the function if the artist is already displayed
+  }
+
   const response = await fetch(`https://api.spotify.com/v1/artists/${artist.id}`, {
     headers: { "Authorization": `Bearer ${data.access_token}` }
   });
@@ -102,23 +91,14 @@ const fetchArtist = async (artist) => {
   const artistName = document.createElement("h2");
   artistName.textContent = artist.name;
 
-  // heartIcon.innerHTML property is set to "❤️," which is a Unicode character representing a red heart. 
-  // When you append this heartIcon element to your webpage, it will display the heart icon as text content on the page. This way, 
-  // you don't need to use an image for the heart icon, and it will be displayed as a character.
-
   const heartIcon = document.createElement("span");
   heartIcon.className = "heart-icon";
   heartIcon.innerHTML = isArtistHearted(artist.id) ? "❤️" : "🤍";
   heartIcon.addEventListener("click", () => toggleHeart(artist.id));
 
-// resetArtistContainer is a function that is called when the button is clicked. It is responsible for resetting the information
-//  displayed for a specific artist.
-// artist.id is used as a parameter for the resetArtistContainer function, which indicates which artist's information needs to be reset.
-
   const resetButton = document.createElement("button");
   resetButton.textContent = "Reset";
   resetButton.addEventListener("click", () => resetArtistContainer(artist.id));
-
 
   const genresContainer = document.createElement("div");
   genresContainer.classList.add("genres");
@@ -134,11 +114,8 @@ const fetchArtist = async (artist) => {
 
   artistImage.addEventListener("click", () => showAlbumDropdown(artist.id));
 
-
   await fetchArtistGenre(artist.id, artistContainer);
 };
-
-
 
 const showAlbumDropdown = async (artistId) => {
   clearAlbumDropdown();
@@ -157,7 +134,6 @@ const showAlbumDropdown = async (artistId) => {
   const artistAlbums = await response.json();
   renderAlbumDropdown(artistAlbums.items, artistId, albumDropdown);
 };
-
 
 const clearAlbumDropdown = () => {
   const albumDropdowns = content.querySelectorAll("select[id^='albumDropdown-']");
@@ -188,14 +164,18 @@ const renderAlbumDropdown = (albums, artistId, albumDropdown) => {
   artistContainer.appendChild(albumDropdown);
 };
 
-
 const clearTrackList = (trackListContainer) => {
   const existingTrackList = trackListContainer.querySelector("ul");
   if (existingTrackList) {
     existingTrackList.remove();
   }
-};
 
+  // Clear existing album cover
+  const existingAlbumCover = trackListContainer.querySelector(".album-cover");
+  if (existingAlbumCover) {
+    existingAlbumCover.remove();
+  }
+};
 
 const fetchAlbumTracks = async (albumId, trackListContainer) => {
   const response = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks`, {
@@ -203,26 +183,70 @@ const fetchAlbumTracks = async (albumId, trackListContainer) => {
   });
 
   const albumTracks = await response.json();
-  renderTrackList(albumTracks.items, trackListContainer);
+  const albumDetails = await fetch(`https://api.spotify.com/v1/albums/${albumId}`, {
+    headers: { "Authorization": `Bearer ${data.access_token}` }
+  });
+  const albumInfo = await albumDetails.json();
+
+  renderTrackList(albumTracks.items, trackListContainer, albumInfo.images[1].url);
 };
 
-
-const renderTrackList = (tracks, trackListContainer) => {
+const renderTrackList = (tracks, trackListContainer, albumCoverUrl) => {
   const trackList = document.createElement("ul");
-  tracks.forEach((track) => {
+
+  // Create and append the album cover image
+  const albumCover = document.createElement("img");
+  albumCover.src = albumCoverUrl;
+  albumCover.classList.add("album-cover");
+  trackListContainer.appendChild(albumCover);
+
+  tracks.forEach((track, index) => {
     const listItem = document.createElement("li");
-    listItem.textContent = track.name;
+    listItem.textContent = `${index + 1}. ${track.name}`; // Adding the track number
     trackList.appendChild(listItem);
   });
 
   trackListContainer.appendChild(trackList);
 };
 
+const searchInput = document.getElementById("searchInput");
+const suggestionsContainer = document.getElementById("suggestions");
+
+searchInput.addEventListener("input", async () => {
+  const searchTerm = searchInput.value.trim();
+  if (searchTerm) {
+    const response = await fetch(`https://api.spotify.com/v1/search?q=${searchTerm}&type=artist&limit=5`, {
+      headers: { "Authorization": `Bearer ${data.access_token}` }
+    });
+
+    const searchResults = await response.json();
+    if (searchResults.artists && searchResults.artists.items.length > 0) {
+      displaySuggestions(searchResults.artists.items);
+    } else {
+      clearSuggestions();
+    }
+  } else {
+    clearSuggestions();
+  }
+});
+
+const displaySuggestions = (artists) => {
+  clearSuggestions();
+  artists.forEach(artist => {
+    const option = document.createElement("option");
+    option.value = artist.name;
+    suggestionsContainer.appendChild(option);
+  });
+};
+
+const clearSuggestions = () => {
+  while (suggestionsContainer.firstChild) {
+    suggestionsContainer.removeChild(suggestionsContainer.firstChild);
+  }
+};
 
 const searchArtist = async () => {
-  const searchInput = document.getElementById("searchInput");
-  const searchTerm = searchInput.value;
-
+  const searchTerm = searchInput.value.trim();
   if (searchTerm) {
     const response = await fetch(`https://api.spotify.com/v1/search?q=${searchTerm}&type=artist`, {
       headers: { "Authorization": `Bearer ${data.access_token}` }
@@ -232,12 +256,16 @@ const searchArtist = async () => {
     if (searchResults.artists && searchResults.artists.items.length > 0) {
       const artist = searchResults.artists.items[0];
       fetchArtist({ id: artist.id, name: artist.name });
-      searchInput.value = '';
+      searchInput.value = ''; // Clear the search input field
+      clearSuggestions();
     } else {
       alert("No artists found for the given search term.");
     }
   }
 };
+
+const searchButton = document.getElementById("searchButton");
+searchButton.addEventListener("click", searchArtist);
 
 const content = document.getElementById("content");
 let data = {};
@@ -263,6 +291,5 @@ function updateHeartedArtists(artistId, hearted) {
 
   localStorage.setItem("heartedArtists", JSON.stringify(heartedArtists));
 }
-
 
 renderPage();

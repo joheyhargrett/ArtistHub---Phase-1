@@ -13,9 +13,14 @@
   </div>
 
   <div id="content"></div>
-  <input type="text" id="searchInput" placeholder="Search for an artist">
+  <div class="search-container">
+    <input list="suggestions" id="searchInput" placeholder="Search for an artist">
+    <datalist id="suggestions"></datalist>
+  </div>
   <button id="searchButton">Search Artist</button>
 
   <script src="index.js"></script>
 </body>
 </html>
+
+

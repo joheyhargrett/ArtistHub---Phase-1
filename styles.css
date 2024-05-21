@@ -92,7 +92,14 @@ ul {
 }
 
 /* Style for the search input */
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+}
+
 #searchInput {
+  width: 100%;
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
@@ -100,7 +107,6 @@ ul {
   font-weight: bold;
   color: black;
   margin-top: 20px;
-  
 }
 
 #searchInput:focus {
@@ -189,7 +195,6 @@ ul {
 button {
   transition: transform 0.2s;
   animation: pulsate 1s infinite, colorChange 3s infinite;
-  
 }
 
 button:hover {
@@ -218,4 +223,31 @@ button:active {
   100% {
     transform: translateX(0);
   }
+}
+
+/* Style for the suggestions box */
+#suggestions {
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  z-index: 1000;
+}
+
+.suggestion-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* Style for album cover images */
+.album-cover {
+  width: 100px;
+  height: 100px;
+  margin: 10px 0;
 }
